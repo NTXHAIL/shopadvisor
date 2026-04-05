@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Advisor Support — NTX Hail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0a0f1e;
+  --surface:  #111b2e;
+  --surface2: #1a2540;
+  --border:   rgba(255,255,255,0.06);
+  --red:      #e53e3e;
+  --red-dim:  rgba(229,62,62,0.12);
+  --red-glow: rgba(229,62,62,0.3);
+  --text:     #f8fafc;
+  --muted:    #94a3b8;
+  --dim:      #64748b;
+  --accent:   #fca5a5;
+  --blue:     #38bdf8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ── TOPBAR ─────────────────────────────── */
+.topbar {
+  background: linear-gradient(135deg, #0d1526 0%, var(--surface2) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 10px var(--red-glow);
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255,255,255,0.12);
+}
+
+.brand-section {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dim);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--red-dim);
+  border: 1px solid var(--red-glow);
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.btn-print:hover { background: rgba(229,62,62,0.22); }
+.btn-print svg { flex-shrink: 0; }
+
+/* ── TABS NAV ───────────────────────────── */
+.tab-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky;
+  top: 60px;
+  z-index: 90;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: 14px 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.tab-btn:hover:not(.active) { color: #cbd5e1; }
+.tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+
+/* ── BODY ───────────────────────────────── */
+.page-body {
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── PANE HEADER ────────────────────────── */
+.pane-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.pane-title { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.8px; }
+.pane-subtitle { font-size: 12px; color: var(--dim); margin-top: 3px; letter-spacing: 0.3px; }
+
+/* ── SECTION LABEL ──────────────────────── */
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 14px;
+  margin-top: 28px;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* ── MATRIX TABLE ───────────────────────── */
+.matrix-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 580px;
+}
+
+.matrix th {
+  background: var(--surface2);
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap;
+}
+.matrix th:first-child { text-align: left; padding-left: 16px; }
+
+.matrix td {
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: #cbd5e1;
+  font-size: 12px;
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+}
+.matrix td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+  padding-left: 16px;
+}
+.matrix tr:last-child td { border-bottom: none; }
+.matrix tbody tr:hover td { background: rgba(255,255,255,0.02); }
+.matrix .cr { color: var(--dim); font-style: italic; font-size: 11px; font-family: 'DM Sans', sans-serif; }
+.matrix .na { color: rgba(100,116,139,0.4); font-family: 'DM Sans', sans-serif; }
+
+/* ── ADD-ONS BLOCK ──────────────────────── */
+.addons-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+
+.addons-block h4 {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 14px;
+}
+
+.addons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.addon-pill {
+  background: var(--red-dim);
+  border: 1px solid rgba(229,62,62,0.18);
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+.addon-pill::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+}
+
+/* ── BEST PRACTICES GRID ────────────────── */
+.bp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.bp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.bp-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--red);
+  opacity: 0.5;
+}
+
+.bp-card h4 {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+
+.bp-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.bp-card li {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+.bp-card li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--red);
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+/* ── FAQ ────────────────────────────────── */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.faq-item.open { border-color: rgba(229,62,62,0.25); }
+
+.faq-q {
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+  transition: background 0.15s;
+}
+.faq-q:hover { background: rgba(255,255,255,0.02); }
+
+.faq-arrow {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(229,62,62,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s, background 0.2s;
+  color: var(--red);
+  font-size: 10px;
+}
+.faq-item.open .faq-arrow { transform: rotate(90deg); background: rgba(229,62,62,0.2); }
+
+.faq-a {
+  display: none;
+  padding: 0 20px 18px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.75;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.faq-item.open .faq-a { display: block; }
+.faq-a strong { color: var(--text); font-weight: 700; }
+
+/* ── PRINT STYLES ───────────────────────── */
+@media print {
+  .topbar, .tab-nav, .btn-print { display: none !important; }
+  body { background: #fff; color: #1e293b; }
+  .page-body { padding: 20px; max-width: 100%; }
+  .tab-pane { display: block !important; page-break-before: always; }
+  .tab-pane:first-of-type { page-break-before: avoid; }
+  .pane-header { border-bottom: 2px solid #1e293b; margin-bottom: 16px; padding-bottom: 12px; }
+  .pane-title { font-size: 20px; color: #1e293b; }
+  .matrix-wrap { border: 1px solid #cbd5e1; border-radius: 0; }
+  .matrix th { background: #1e293b; color: #fff; }
+  .matrix td { color: #334155; border-bottom-color: #e2e8f0; font-size: 11px; }
+  .matrix td:first-child { color: #1e293b; }
+  .addons-block { background: #f8fafc; border-color: #e2e8f0; }
+  .addons-block h4 { color: #64748b; }
+  .addon-pill { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+  .addon-pill::before { background: #ef4444; }
+  .bp-card { background: #f8fafc; border-color: #e2e8f0; }
+  .bp-card li { color: #475569; }
+  .faq-item { border-color: #e2e8f0; }
+  .faq-q { color: #1e293b; }
+  .faq-a { display: block !important; color: #475569; }
+  .faq-arrow { display: none; }
+  .section-label { color: #64748b; }
+}
+
+/* ── RESPONSIVE ─────────────────────────── */
+@media (max-width: 640px) {
+  .topbar { padding: 0 16px; }
+  .page-body { padding: 20px 16px; }
+  .brand-divider, .brand-section { display: none; }
+  .pane-title { font-size: 22px; }
+  .bp-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-dot"></div>
+    <span class="brand-name">NTX Hail</span>
+    <div class="brand-divider"></div>
+    <span class="brand-section">Shop Advisor Support</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn-print" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+      </svg>
+      Print
+    </button>
+  </div>
+</header>
+
+<!-- ── TAB NAV ── -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" onclick="switchTab('faq', this)">FAQ</button>
+  <button class="tab-btn" onclick="switchTab('bestpractices', this)">Best Practices</button>
+  <button class="tab-btn" onclick="switchTab('statefarm', this)">State Farm</button>
+  <button class="tab-btn" onclick="switchTab('allstate', this)">Allstate</button>
+  <button class="tab-btn" onclick="switchTab('farmers', this)">Farmers</button>
+  <button class="tab-btn" onclick="switchTab('geico', this)">GEICO</button>
+  <button class="tab-btn" onclick="switchTab('progressive', this)">Progressive</button>
+  <button class="tab-btn" onclick="switchTab('usaa', this)">USAA</button>
+  <button class="tab-btn" onclick="switchTab('travelers', this)">Travelers</button>
+  <button class="tab-btn" onclick="switchTab('nationwide', this)">Nationwide</button>
+  <button class="tab-btn" onclick="switchTab('libertymutual', this)">Liberty Mutual</button>
+</nav>
+
+<!-- ── PAGE BODY ── -->
+<main class="page-body">
+
+  <!-- ════ FAQ ════ -->
+  <div id="pane-faq" class="tab-pane active">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">Frequently Asked Questions</div>
+        <div class="pane-subtitle">PDR estimating, carrier guidelines &amp; field reference</div>
+      </div>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How do I determine dent size for estimating?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a">Use coins or magnetic discs that completely cover the outer circumference of the damage using the reflection of a straight edge. The dent size used should represent the <strong>majority</strong> size present on the panel. For example: if a panel has 50 dimes, 15 nickels, and 5 quarters — estimate as 70 dimes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          When should I use Conventional Repair vs PDR?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a">Consider conventional repair when damage exceeds PDR capability: paint is broken on the panel, damage is excessive, or the dent count/size exceeds the matrix ceiling for that panel. Panel replacement should be considered when it's the most cost-effective repair option.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What are standard markup rules across carriers?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a"><strong>+25% for Aluminum panels.</strong> Most carriers allow this. <strong>+25% for High Strength Steel (HSS).</strong> Widely accepted. <strong>+25% for Double Panels</strong> (roof rails, limited access areas) — varies by carrier. <strong>Maximum 35% markup</strong> when 2+ additions apply (most carriers enforce this cap). Only <strong>ONE markup per panel</strong> is generally allowed — apply the highest applicable.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How are Oversized Dents handled?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a">Damage exceeding a <strong>half-dollar in size</strong> is classified as an Oversized Dent (OS). Add <strong>$50 per OS dent</strong> as a separate line item — do not include in the dent count. Double Oversized (DOS) — dents exceeding 2x half-dollar — add <strong>$100 per dent</strong>. Most carriers (State Farm, Allstate, USAA, Farmers, Progressive) follow this standard.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What photos are required for a hail claim?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a">Standard photo requirements across most carriers: <strong>4 corners of vehicle, VIN, odometer, prior damage</strong>, and hail damage with and without markings. Use a black and white grid to show dent size and depth. For CAT claims, the VA Adjuster will direct specific photo requirements.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What is R&amp;I and when do I add it?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a"><strong>R&amp;I (Remove &amp; Install)</strong> is labor time to remove and reinstall parts to access a panel for PDR. Use CCC estimating guides for published R&amp;I times. Common R&amp;I items: Hood liner, headliner, sunroof/rack, trunk liner, tail light, wheel liner, moldings, door glass. Add R&amp;I as needed when parts must be moved to complete repairs.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What is Corrosion Protection and when do I charge it?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a">Corrosion protection is added when necessary to protect bare metal exposed during PDR. Most carriers allow <strong>$10 per panel, up to $30 maximum per vehicle</strong>. State Farm, USAA, Farmers, and Progressive all follow this guideline. Add when applicable.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What happens when dent count exceeds the matrix?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a">When damage exceeds the matrix ceiling, carriers handle it differently. State Farm uses <strong>MCE (Most Cost Effective)</strong> — PDR can be negotiated case by case. USAA uses <strong>MCA (Most Cost Appropriate)</strong>. Progressive uses <strong>CR (Conventional or Replace)</strong>. Farmers and Allstate allow manual line entries beyond the matrix. Document thoroughly and supplement as needed.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How do I handle a CAT event supplement with Allstate?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a">Use <strong>Virtual Assist (VA)</strong> to request supplements. Supplement requests must be itemized. The sublet vendor estimate/invoice must be clear with counts and R&amp;I labor. Use the "Import Workfile Copy" feature to download the Allstate estimate via Estimate Share. For payment concerns, use CCC Quick Chat.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What is the vehicle inspection standard before estimating?
+          <span class="faq-arrow">▶</span>
+        </div>
+        <div class="faq-a">For proper hail inspection: vehicle must be <strong>clean, dry, indoors, with proper lighting</strong>. Do not estimate on a wet or dirty vehicle — this affects dent visibility and sizing accuracy. Document all pre-existing unrelated damage in the Prior Damage section of the estimate.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ BEST PRACTICES ════ -->
+  <div id="pane-bestpractices" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">PDR Best Practices</div>
+        <div class="pane-subtitle">Inspection standards, markup rules &amp; estimating guidelines</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+    <div class="bp-grid">
+      <div class="bp-card">
+        <h4>Inspection Standards</h4>
+        <ul>
+          <li>Vehicle must be clean, dry, and indoors with proper lighting</li>
+          <li>Use coins/magnetic disk to size dents — must cover full circumference</li>
+          <li>Use reflection of straight edge to assess depth</li>
+          <li>Dent size = majority size on the panel</li>
+          <li>Document all prior damage separately</li>
+        </ul>
+      </div>
+      <div class="bp-card">
+        <h4>Estimating Guidelines</h4>
+        <ul>
+          <li>List PDR by panel — never as a single line item</li>
+          <li>Include dent count and dent size on every line</li>
+          <li>PDR pricing should not exceed panel replacement cost</li>
+          <li>Use CCC estimating system for R&amp;I times</li>
+          <li>Add Corrosion Protection ($10/panel, max $30) when applicable</li>
+        </ul>
+      </div>
+      <div class="bp-card">
+        <h4>Markup Rules</h4>
+        <ul>
+          <li>+25% for Aluminum panels</li>
+          <li>+25% for High Strength Steel (HSS)</li>
+          <li>+25% for Double Panels / limited access</li>
+          <li>+25% for Large SUVs, trucks, full-size vans (roof)</li>
+          <li>Maximum 35% when 2+ markups apply — ONE per panel (Allstate, Progressive, USAA)</li>
+        </ul>
+      </div>
+      <div class="bp-card">
+        <h4>Oversized Dents</h4>
+        <ul>
+          <li>OS dent = larger than half-dollar — add $50/dent separately</li>
+          <li>DOS dent = exceeds two half-dollars — add $100/dent</li>
+          <li>OS/DOS dents are NOT included in panel dent count</li>
+          <li>Document OS dents as a separate line item with count</li>
+        </ul>
+      </div>
+      <div class="bp-card">
+        <h4>Photo Requirements</h4>
+        <ul>
+          <li>4 corners of vehicle (all angles)</li>
+          <li>VIN and odometer</li>
+          <li>Hail damage: with AND without markings</li>
+          <li>Black and white grid for dent size/depth</li>
+          <li>Prior/unrelated damage documentation</li>
+        </ul>
+      </div>
+      <div class="bp-card">
+        <h4>Conventional &amp; R&amp;R</h4>
+        <ul>
+          <li>Consider conventional when paint is broken or damage is excessive</li>
+          <li>Consider R&amp;R when it's more cost-effective than PDR</li>
+          <li>Apply markup only to the PDR portion on combo repairs</li>
+          <li>Document reasoning in estimate notes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ STATE FARM ════ -->
+  <div id="pane-statefarm" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">State Farm PDR Matrix</div>
+        <div class="pane-subtitle">D = Dime &nbsp;·&nbsp; N = Nickel &nbsp;·&nbsp; Q = Quarter &nbsp;·&nbsp; H = Half Dollar &nbsp;·&nbsp; MCE = Most Cost Effective</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+
+    <div class="section-label">Very Light — Medium (1–50 Dents)</div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">1–5</th><th colspan="4">6–15</th><th colspan="4">16–30</th><th colspan="4">31–50</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hood</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>250</td><td>200</td><td>225</td><td>275</td><td>350</td><td>300</td><td>350</td><td>425</td><td>500</td></tr>
+          <tr><td>Roof</td><td>100</td><td>125</td><td>150</td><td>200</td><td>175</td><td>225</td><td>250</td><td>325</td><td>250</td><td>300</td><td>350</td><td>425</td><td>375</td><td>425</td><td>525</td><td>600</td></tr>
+          <tr><td>Deck Lid</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>200</td><td>250</td><td>175</td><td>225</td><td>275</td><td>300</td><td>275</td><td>325</td><td>400</td><td>475</td></tr>
+          <tr><td>Roof Rail</td><td>85</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td class="cr">MCE</td><td>200</td><td>250</td><td>275</td><td class="cr">MCE</td><td>300</td><td>400</td><td class="cr">MCE</td><td class="cr">MCE</td></tr>
+          <tr><td>Fender</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>175</td><td>225</td><td>275</td><td>300</td><td>275</td><td>300</td><td>350</td><td>375</td></tr>
+          <tr><td>Door</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>175</td><td>225</td><td>250</td><td>300</td><td>275</td><td>300</td><td>350</td><td class="cr">MCE</td></tr>
+          <tr><td>Quarter</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>175</td><td>225</td><td>250</td><td>300</td><td>275</td><td>325</td><td>400</td><td>475</td></tr>
+          <tr><td>Cowl/Other</td><td>100</td><td>125</td><td>150</td><td>175</td><td>150</td><td>175</td><td>200</td><td>225</td><td>200</td><td>225</td><td>250</td><td>275</td><td class="cr">MCE</td><td class="cr">MCE</td><td class="cr">MCE</td><td class="cr">MCE</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-label">Heavy — Ceiling (51–250 Dents)</div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">51–75</th><th colspan="4">76–100</th><th colspan="4">101–150</th><th colspan="4">151–200</th><th colspan="4">201–250</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hood</td><td>375</td><td>400</td><td>500</td><td>625</td><td>450</td><td>550</td><td>650</td><td>750</td><td>550</td><td>650</td><td class="cr">MCE</td><td class="cr">MCE</td><td>650</td><td>800</td><td class="cr">MCE</td><td class="cr">MCE</td><td>725</td><td>825</td><td class="cr">MCE</td><td class="cr">MCE</td></tr>
+          <tr><td>Roof</td><td>475</td><td>550</td><td>675</td><td>800</td><td>575</td><td>675</td><td>800</td><td>900</td><td>650</td><td>750</td><td>950</td><td>1100</td><td>850</td><td>950</td><td>1150</td><td>1450</td><td>950</td><td>1150</td><td>1350</td><td>1550</td></tr>
+          <tr><td>Deck Lid</td><td>400</td><td>450</td><td>500</td><td>600</td><td>450</td><td>550</td><td>650</td><td class="cr">MCE</td><td>550</td><td>650</td><td class="cr">MCE</td><td class="cr">MCE</td><td>650</td><td class="cr">MCE</td><td class="cr">MCE</td><td class="cr">MCE</td><td>750</td><td class="cr">MCE</td><td class="cr">MCE</td><td class="cr">MCE</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="addons-block">
+      <h4>Add-ons &amp; Notes</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Aluminum panels</div>
+        <div class="addon-pill">+25% HSS panels (when requested)</div>
+        <div class="addon-pill">+25% Double-layered panels / roof rails</div>
+        <div class="addon-pill">+25% Full-size vans, SUVs, ext. cab trucks (roof)</div>
+        <div class="addon-pill">ONE 25% add-on per panel maximum</div>
+        <div class="addon-pill">$50/dent OS dents (&gt; half-dollar, separate line)</div>
+        <div class="addon-pill">$10/panel Corrosion Protection (max $30/vehicle)</div>
+        <div class="addon-pill">MCE = Most Cost Effective — negotiate case by case</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ ALLSTATE ════ -->
+  <div id="pane-allstate" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">Allstate PDR Matrix</div>
+        <div class="pane-subtitle">Organized by coin size &nbsp;·&nbsp; Blank fields require MCE determination for PDR or Replacement</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+
+    <div class="section-label">Dime Size</div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead><tr><th>Part Name</th><th>1–5</th><th>6–15</th><th>16–30</th><th>31–50</th><th>51–75</th><th>76–100</th><th>101–150</th><th>151–200</th><th>200+</th></tr></thead>
+        <tbody>
+          <tr><td>Cowl</td><td class="na">—</td><td>100</td><td>150</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Decklid</td><td class="na">—</td><td>75</td><td>125</td><td>200</td><td>300</td><td>400</td><td>475</td><td>600</td><td>700</td></tr>
+          <tr><td>Door/Fender/QP</td><td class="na">—</td><td>75</td><td>125</td><td>200</td><td>300</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Hood</td><td class="na">—</td><td>75</td><td>125</td><td>200</td><td>300</td><td>400</td><td>475</td><td>600</td><td>700</td></tr>
+          <tr><td>Roof</td><td class="na">—</td><td>100</td><td>175</td><td>250</td><td>375</td><td>475</td><td>575</td><td>700</td><td>850</td></tr>
+          <tr><td>Roof Rail</td><td class="na">—</td><td>100</td><td>150</td><td>250</td><td>450</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Uniside</td><td class="na">—</td><td>100</td><td>150</td><td>250</td><td>450</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td>1075</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-label">Nickel Size</div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead><tr><th>Part Name</th><th>1–5</th><th>6–15</th><th>16–30</th><th>31–50</th><th>51–75</th><th>76–100</th><th>101–150</th><th>151–200</th><th>200+</th></tr></thead>
+        <tbody>
+          <tr><td>Cowl</td><td class="na">—</td><td>125</td><td>200</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Decklid</td><td class="na">—</td><td>100</td><td>175</td><td>250</td><td>350</td><td>475</td><td>600</td><td>750</td><td>900</td></tr>
+          <tr><td>Door/Fender/QP</td><td class="na">—</td><td>100</td><td>150</td><td>225</td><td>325</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Hood</td><td class="na">—</td><td>100</td><td>175</td><td>250</td><td>350</td><td>475</td><td>575</td><td>700</td><td>850</td></tr>
+          <tr><td>Roof</td><td class="na">—</td><td>125</td><td>225</td><td>300</td><td>450</td><td>575</td><td>700</td><td>850</td><td>1000</td></tr>
+          <tr><td>Roof Rail</td><td class="na">—</td><td>125</td><td>200</td><td>300</td><td>550</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Uniside</td><td class="na">—</td><td>125</td><td>200</td><td>300</td><td>550</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td>1275</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-label">Quarter Size</div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead><tr><th>Part Name</th><th>1–5</th><th>6–15</th><th>16–30</th><th>31–50</th><th>51–75</th><th>76–100</th><th>101–150</th><th>151–200</th><th>200+</th></tr></thead>
+        <tbody>
+          <tr><td>Cowl</td><td class="na">—</td><td>150</td><td>250</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Decklid</td><td class="na">—</td><td>125</td><td>200</td><td>300</td><td>425</td><td>550</td><td>700</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Door/Fender/QP</td><td class="na">—</td><td>125</td><td>175</td><td>250</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Hood</td><td class="na">—</td><td>125</td><td>200</td><td>300</td><td>425</td><td>550</td><td>700</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Roof</td><td class="na">—</td><td>150</td><td>250</td><td>375</td><td>550</td><td>700</td><td>850</td><td>1000</td><td>1250</td></tr>
+          <tr><td>Roof Rail</td><td class="na">—</td><td>150</td><td>250</td><td>450</td><td>550</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Uniside</td><td class="na">—</td><td>150</td><td>250</td><td>450</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td>1500</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-label">Half Dollar Size</div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead><tr><th>Part Name</th><th>1–5</th><th>6–15</th><th>16–30</th><th>31–50</th><th>51–75</th><th>76–100</th><th>101–150</th><th>151–200</th><th>200+</th></tr></thead>
+        <tbody>
+          <tr><td>Cowl</td><td class="na">—</td><td>200</td><td>400</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Decklid</td><td class="na">—</td><td>150</td><td>300</td><td>400</td><td>525</td><td>650</td><td>800</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Door/Fender/QP</td><td class="na">—</td><td>150</td><td>300</td><td>400</td><td>525</td><td>650</td><td>800</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Hood</td><td class="na">—</td><td>150</td><td>300</td><td>400</td><td>525</td><td>675</td><td>825</td><td>975</td><td class="na">—</td></tr>
+          <tr><td>Roof</td><td class="na">—</td><td>200</td><td>400</td><td>525</td><td>675</td><td>825</td><td>975</td><td>1200</td><td>1500</td></tr>
+          <tr><td>Roof Rail</td><td class="na">—</td><td>200</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+          <tr><td>Uniside</td><td class="na">—</td><td>200</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="addons-block">
+      <h4>Allstate Add-ons &amp; Guidelines</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Extended Panel Repairs</div>
+        <div class="addon-pill">+25% Aluminum &amp; HSS panels</div>
+        <div class="addon-pill">+25% Double Panels (excl. roof rails, upper door frames)</div>
+        <div class="addon-pill">Maximum 35% markup when 2+ adds apply</div>
+        <div class="addon-pill">$50/dent Oversized (&gt; half-dollar, separate line)</div>
+        <div class="addon-pill">$100/dent Double Oversized (DOS)</div>
+        <div class="addon-pill">Panel Markup requires line note explanation</div>
+        <div class="addon-pill">Use CCC One PDR matrix for all estimates</div>
+        <div class="addon-pill">CAT claims — use Virtual Assist for supplements</div>
+        <div class="addon-pill">GHRN shops stop receiving CAT assignments during declared CATs</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ FARMERS ════ -->
+  <div id="pane-farmers" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">Farmers PDR Matrix</div>
+        <div class="pane-subtitle">D = Dime &nbsp;·&nbsp; N = Nickel &nbsp;·&nbsp; Q = Quarter &nbsp;·&nbsp; H = Half Dollar</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">1–5</th><th colspan="4">6–15</th><th colspan="4">16–30</th><th colspan="4">31–50</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hood</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>300</td><td>200</td><td>250</td><td>300</td><td>375</td><td>300</td><td>350</td><td>425</td><td>515</td></tr>
+          <tr><td>Roof</td><td>100</td><td>125</td><td>150</td><td>200</td><td>175</td><td>225</td><td>250</td><td>375</td><td>250</td><td>300</td><td>375</td><td>475</td><td>375</td><td>450</td><td>550</td><td>625</td></tr>
+          <tr><td>Deck Lid</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>300</td><td>200</td><td>250</td><td>300</td><td>375</td><td>300</td><td>350</td><td>425</td><td>515</td></tr>
+          <tr><td>Quarter Panel</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>225</td><td>200</td><td>225</td><td>250</td><td>300</td><td>275</td><td>300</td><td>375</td><td>400</td></tr>
+          <tr><td>Roof Rail</td><td>100</td><td>125</td><td>150</td><td>200</td><td>150</td><td>200</td><td>225</td><td>250</td><td>235</td><td>275</td><td>375</td><td class="na">—</td><td>385</td><td>475</td><td>500</td><td class="na">—</td></tr>
+          <tr><td>Door</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>215</td><td>200</td><td>225</td><td>250</td><td>275</td><td>285</td><td>315</td><td>325</td><td>350</td></tr>
+          <tr><td>Fender</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>215</td><td>200</td><td>225</td><td>250</td><td>275</td><td>285</td><td>315</td><td>325</td><td>350</td></tr>
+          <tr><td>Cowl</td><td>100</td><td>125</td><td>150</td><td>200</td><td>150</td><td>200</td><td>250</td><td>300</td><td>175</td><td>225</td><td>250</td><td>300</td><td>200</td><td>250</td><td>275</td><td>350</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="addons-block">
+      <h4>Farmers Add-ons &amp; Notes (March 2026)</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Aluminum panels</div>
+        <div class="addon-pill">+25% High Strength Steel (HSS)</div>
+        <div class="addon-pill">+25% Double panels (incl. roof rails) when entire panel is double</div>
+        <div class="addon-pill">+25% Large SUV / truck / van roof</div>
+        <div class="addon-pill">$50/dent Oversized dent (&gt; half-dollar)</div>
+        <div class="addon-pill">$10/panel Corrosion Protection (max $30)</div>
+        <div class="addon-pill">No markup on exotic vehicles, door or glue pulls</div>
+        <div class="addon-pill">Can exceed matrix — manual line entry if it makes sense</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ GEICO ════ -->
+  <div id="pane-geico" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">GEICO PDR Matrix (2024)</div>
+        <div class="pane-subtitle">D = Dime &nbsp;·&nbsp; N = Nickel &nbsp;·&nbsp; Q = Quarter &nbsp;·&nbsp; H = Half Dollar &nbsp;·&nbsp; RR = Repair or Replace</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">1–5 V.Light</th><th colspan="4">6–15 Light</th><th colspan="4">16–30 Moderate</th><th colspan="4">31–50 Medium</th><th colspan="4">51–75 Heavy</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hood</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>250</td><td>175</td><td>200</td><td>250</td><td>325</td><td>275</td><td>325</td><td>400</td><td>475</td><td>350</td><td>400</td><td>475</td><td>600</td></tr>
+          <tr><td>Roof</td><td>100</td><td>125</td><td>150</td><td>200</td><td>175</td><td>200</td><td>250</td><td>300</td><td>200</td><td>250</td><td>325</td><td>400</td><td>300</td><td>350</td><td>450</td><td>525</td><td>375</td><td>425</td><td>525</td><td>650</td></tr>
+          <tr><td>Deck Lid</td><td>75</td><td>90</td><td>125</td><td>140</td><td>100</td><td>150</td><td>175</td><td>200</td><td>175</td><td>200</td><td>225</td><td>250</td><td>225</td><td>250</td><td>300</td><td>325</td><td>325</td><td>375</td><td>425</td><td>475</td></tr>
+          <tr><td>LF/RF Fender</td><td>75</td><td>90</td><td>125</td><td>140</td><td>100</td><td>150</td><td>175</td><td>200</td><td>175</td><td>200</td><td>225</td><td>275</td><td>225</td><td>250</td><td>300</td><td>325</td><td>325</td><td>375</td><td>425</td><td>475</td></tr>
+          <tr><td>Quarter</td><td>75</td><td>90</td><td>125</td><td>140</td><td>100</td><td>150</td><td>175</td><td>200</td><td>175</td><td>200</td><td>225</td><td>275</td><td>225</td><td>250</td><td>300</td><td>325</td><td>325</td><td>375</td><td>425</td><td class="cr">RR</td></tr>
+          <tr><td>Doors</td><td>75</td><td>90</td><td>125</td><td>140</td><td>100</td><td>150</td><td>175</td><td>200</td><td>175</td><td>200</td><td>225</td><td>275</td><td>225</td><td>250</td><td>300</td><td>325</td><td>325</td><td>375</td><td>425</td><td class="cr">RR</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="addons-block">
+      <h4>GEICO Add-ons</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Aluminum or HSS</div>
+        <div class="addon-pill">+25% Double Panel</div>
+        <div class="addon-pill">+30% Aluminum Double Panel or HSS Double Panel</div>
+        <div class="addon-pill">Maximum 35% per panel when 2+ apply</div>
+        <div class="addon-pill">+25% Minivans, SUVs, Ext. Cab Trucks, Crossovers</div>
+        <div class="addon-pill">$50/dent Oversized dent</div>
+        <div class="addon-pill">RR = Repair or Replace at that range</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ PROGRESSIVE ════ -->
+  <div id="pane-progressive" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">Progressive PDR Matrix</div>
+        <div class="pane-subtitle">D = Dime &nbsp;·&nbsp; N = Nickel &nbsp;·&nbsp; Q = Quarter &nbsp;·&nbsp; H = Half Dollar &nbsp;·&nbsp; CR = Conventional or Replace</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">1–5</th><th colspan="4">6–15</th><th colspan="4">16–30</th><th colspan="4">31–50</th><th colspan="4">51–75</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hood</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>300</td><td>200</td><td>250</td><td>300</td><td>400</td><td>300</td><td>350</td><td>400</td><td>525</td><td>400</td><td>475</td><td>550</td><td>650</td></tr>
+          <tr><td>Roof</td><td>100</td><td>125</td><td>150</td><td>200</td><td>175</td><td>225</td><td>250</td><td>400</td><td>250</td><td>300</td><td>375</td><td>525</td><td>375</td><td>450</td><td>550</td><td>675</td><td>475</td><td>575</td><td>700</td><td>825</td></tr>
+          <tr><td>Deck Lid</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>300</td><td>200</td><td>250</td><td>300</td><td>400</td><td>300</td><td>350</td><td>425</td><td>525</td><td>400</td><td>475</td><td>550</td><td>650</td></tr>
+          <tr><td>Quarter</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>225</td><td>200</td><td>225</td><td>250</td><td>375</td><td>300</td><td>325</td><td>400</td><td>525</td><td>400</td><td>450</td><td>550</td><td class="cr">CR</td></tr>
+          <tr><td>Door</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>225</td><td>200</td><td>225</td><td>250</td><td class="cr">CR</td><td>300</td><td>325</td><td>350</td><td class="cr">CR</td><td>400</td><td>450</td><td>475</td><td class="cr">CR</td></tr>
+          <tr><td>Fender</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>225</td><td>200</td><td>225</td><td>250</td><td class="cr">CR</td><td>300</td><td>325</td><td>350</td><td class="cr">CR</td><td>400</td><td>450</td><td>475</td><td class="cr">CR</td></tr>
+          <tr><td>Cowl/Other</td><td>100</td><td>125</td><td>150</td><td>200</td><td>150</td><td>200</td><td>250</td><td>400</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td><td class="cr">CR</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="addons-block">
+      <h4>Progressive Add-ons</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Extended panel repairs</div>
+        <div class="addon-pill">+25% Aluminum &amp; HSS/UHSS</div>
+        <div class="addon-pill">+25% Double panels (excl. roof rails)</div>
+        <div class="addon-pill">Maximum 35% when 2+ add-ons apply</div>
+        <div class="addon-pill">$50/dent Oversized (&gt; half-dollar, &lt; 2 half-dollars)</div>
+        <div class="addon-pill">$100/dent Double Oversized (&gt; 2 half-dollars)</div>
+        <div class="addon-pill">$10/vehicle Corrosion Protection when applicable</div>
+        <div class="addon-pill">CR = Conventional or Replace</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ USAA ════ -->
+  <div id="pane-usaa" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">USAA 2025 Hail Pricing Matrix</div>
+        <div class="pane-subtitle">D = Dime &nbsp;·&nbsp; N = Nickel &nbsp;·&nbsp; Q = Quarter &nbsp;·&nbsp; H = Half Dollar &nbsp;·&nbsp; MCA = Most Cost Appropriate</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">1–5</th><th colspan="4">6–15</th><th colspan="4">16–30</th><th colspan="4">31–50</th><th colspan="4">51–75</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hood</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>250</td><td>200</td><td>225</td><td>275</td><td>350</td><td>300</td><td>350</td><td>425</td><td>500</td><td>375</td><td>400</td><td>500</td><td>625</td></tr>
+          <tr><td>Roof</td><td>100</td><td>125</td><td>150</td><td>200</td><td>175</td><td>225</td><td>250</td><td>325</td><td>250</td><td>300</td><td>350</td><td>425</td><td>375</td><td>425</td><td>525</td><td>600</td><td>475</td><td>550</td><td>675</td><td>800</td></tr>
+          <tr><td>Deck Lid/Gate</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>200</td><td>250</td><td>175</td><td>225</td><td>275</td><td>300</td><td>275</td><td>325</td><td>400</td><td>475</td><td>400</td><td>450</td><td>500</td><td>600</td></tr>
+          <tr><td>Quarter</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>225</td><td>175</td><td>225</td><td>250</td><td>300</td><td>275</td><td>300</td><td>375</td><td>400</td><td>325</td><td>375</td><td>450</td><td>525</td></tr>
+          <tr><td>Roof Rail</td><td>85</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>225</td><td>200</td><td>250</td><td>275</td><td>325</td><td>300</td><td>400</td><td>500</td><td>575</td><td>400</td><td>500</td><td>600</td><td>700</td></tr>
+          <tr><td>Door</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>175</td><td>225</td><td>250</td><td>300</td><td>275</td><td>300</td><td>350</td><td>375</td><td>325</td><td>375</td><td>425</td><td>475</td></tr>
+          <tr><td>Fender</td><td>80</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>175</td><td>225</td><td>275</td><td>300</td><td>275</td><td>300</td><td>350</td><td>375</td><td>325</td><td>375</td><td>450</td><td>525</td></tr>
+          <tr><td>Cowl</td><td>100</td><td>125</td><td>150</td><td>175</td><td>150</td><td>175</td><td>200</td><td>225</td><td>200</td><td>225</td><td>250</td><td>275</td><td class="cr">MCA</td><td class="cr">MCA</td><td class="cr">MCA</td><td class="cr">MCA</td><td class="cr">MCA</td><td class="cr">MCA</td><td class="cr">MCA</td><td class="cr">MCA</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="addons-block">
+      <h4>USAA Add-ons (Updated July 2025)</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Roof for SUV/UTV, Van, Mini Van, Wagon, Trucks</div>
+        <div class="addon-pill">+25% Aluminum, HSS, Rails, Double Panels*</div>
+        <div class="addon-pill">+35% Aluminum Double Panels* &amp; HSS Double Panels*</div>
+        <div class="addon-pill">Maximum 35% when 2+ add-ons apply</div>
+        <div class="addon-pill">$50/dent Oversized (&gt; half-dollar)</div>
+        <div class="addon-pill">$100/dent Double Oversized (DOS)</div>
+        <div class="addon-pill">$10/panel Corrosion Protection (max $30/vehicle)</div>
+        <div class="addon-pill">*Double panel add-on only when damaged area is double panel</div>
+        <div class="addon-pill">MCA = Most Cost Appropriate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TRAVELERS ════ -->
+  <div id="pane-travelers" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">Travelers Insurance PDR Matrix</div>
+        <div class="pane-subtitle">D = Dime &nbsp;·&nbsp; N = Nickel &nbsp;·&nbsp; Q = Quarter &nbsp;·&nbsp; H = Half Dollar &nbsp;·&nbsp; RR = Repair or Replace</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">1–5 V.Light</th><th colspan="4">6–15 Light</th><th colspan="4">16–30 Moderate</th><th colspan="4">31–50 Medium</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hood</td><td>100</td><td>130</td><td>190</td><td>230</td><td>175</td><td>210</td><td>250</td><td>325</td><td>225</td><td>280</td><td>340</td><td>445</td><td>275</td><td>340</td><td>415</td><td>500</td></tr>
+          <tr><td>Roof</td><td>100</td><td>130</td><td>190</td><td>230</td><td>175</td><td>215</td><td>260</td><td>295</td><td>225</td><td>280</td><td>365</td><td>440</td><td>300</td><td>365</td><td>450</td><td>545</td></tr>
+          <tr><td>Deck Lid</td><td>100</td><td>130</td><td>185</td><td>250</td><td>175</td><td>215</td><td>270</td><td>290</td><td>230</td><td>290</td><td>370</td><td>430</td><td>290</td><td>365</td><td>455</td><td>525</td></tr>
+          <tr><td>L &amp; R Quarter</td><td>75</td><td>100</td><td>135</td><td>195</td><td>165</td><td>190</td><td>220</td><td>290</td><td>215</td><td>245</td><td>310</td><td>395</td><td>255</td><td>310</td><td>390</td><td>465</td></tr>
+          <tr><td>L/R Roof Rail</td><td>100</td><td>125</td><td>135</td><td>175</td><td>165</td><td>195</td><td>230</td><td>295</td><td>215</td><td>250</td><td>320</td><td class="cr">RR</td><td>265</td><td>325</td><td class="cr">RR</td><td class="cr">RR</td></tr>
+          <tr><td>L/R Doors</td><td>75</td><td>100</td><td>125</td><td>175</td><td>150</td><td>175</td><td>205</td><td>290</td><td>195</td><td>235</td><td>280</td><td class="cr">RR</td><td>240</td><td>295</td><td class="cr">RR</td><td class="cr">RR</td></tr>
+          <tr><td>L/R Fenders</td><td>75</td><td>100</td><td>125</td><td>175</td><td>150</td><td>175</td><td>205</td><td>295</td><td>195</td><td>235</td><td>285</td><td class="cr">RR</td><td>240</td><td>290</td><td class="cr">RR</td><td class="cr">RR</td></tr>
+          <tr><td>Metal Sunroof</td><td>75</td><td>100</td><td>125</td><td>175</td><td>150</td><td>175</td><td>205</td><td>290</td><td>195</td><td>235</td><td>285</td><td class="cr">RR</td><td>240</td><td>295</td><td class="cr">RR</td><td class="cr">RR</td></tr>
+          <tr><td>Cowl/Other</td><td>100</td><td>130</td><td>190</td><td>230</td><td>175</td><td>215</td><td>260</td><td>295</td><td class="cr">RR</td><td class="cr">RR</td><td class="cr">RR</td><td class="cr">RR</td><td class="cr">RR</td><td class="cr">RR</td><td class="cr">RR</td><td class="cr">RR</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="addons-block">
+      <h4>Travelers Add-ons</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Aluminum panels</div>
+        <div class="addon-pill">+25% High Strength Steel (HSS)</div>
+        <div class="addon-pill">+25% Double panels (Oversize, SUV, Truck, Van)</div>
+        <div class="addon-pill">$50/dent Oversized dent</div>
+        <div class="addon-pill">RR = Repair or Replace</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ NATIONWIDE ════ -->
+  <div id="pane-nationwide" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">Nationwide PDR Matrix</div>
+        <div class="pane-subtitle">D = Dime &nbsp;·&nbsp; N = Nickel &nbsp;·&nbsp; Q = Quarter &nbsp;·&nbsp; H = Half Dollar</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">1–5</th><th colspan="4">6–15</th><th colspan="4">16–20</th><th colspan="4">31–50</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hood</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>200</td><td>175</td><td>225</td><td>250</td><td>300</td><td>225</td><td>250</td><td>300</td><td>300</td></tr>
+          <tr><td>R/L Fender</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>200</td><td>200</td><td>175</td><td>225</td><td>250</td><td>300</td><td>225</td><td>250</td><td>300</td><td>300</td></tr>
+          <tr><td>Roof</td><td>100</td><td>125</td><td>150</td><td>175</td><td>175</td><td>200</td><td>250</td><td>300</td><td>200</td><td>250</td><td>300</td><td>375</td><td>250</td><td>300</td><td>375</td><td>400</td></tr>
+          <tr><td>R Rail/Corner</td><td>100</td><td>125</td><td>150</td><td>175</td><td>175</td><td>225</td><td>250</td><td>300</td><td>200</td><td>250</td><td>275</td><td>300</td><td>250</td><td>250</td><td>300</td><td>300</td></tr>
+          <tr><td>Doors</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>175</td><td>200</td><td>175</td><td>225</td><td>250</td><td>300</td><td>225</td><td>250</td><td>300</td><td>300</td></tr>
+          <tr><td>Quarter</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>175</td><td>175</td><td>200</td><td>175</td><td>225</td><td>250</td><td>300</td><td>225</td><td>250</td><td>300</td><td>325</td></tr>
+          <tr><td>Deck Lid</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>175</td><td>175</td><td>200</td><td>250</td><td>300</td><td>200</td><td>250</td><td>300</td><td>325</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="addons-block">
+      <h4>Nationwide Add-ons</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Aluminum panels</div>
+        <div class="addon-pill">+25% HSS panels</div>
+        <div class="addon-pill">+25% Double panels</div>
+        <div class="addon-pill">$50/dent Oversized dent</div>
+        <div class="addon-pill">CR = Damage may require replacement</div>
+        <div class="addon-pill">UPD = Unrelated Prior Damage — document separately</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ LIBERTY MUTUAL ════ -->
+  <div id="pane-libertymutual" class="tab-pane">
+    <div class="pane-header">
+      <div>
+        <div class="pane-title">Liberty Mutual / Safeco PDR Matrix</div>
+        <div class="pane-subtitle">D = Dime &nbsp;·&nbsp; N = Nickel &nbsp;·&nbsp; Q = Quarter &nbsp;·&nbsp; H = Half Dollar &nbsp;·&nbsp; MCE = Most Cost Effective</div>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Print
+      </button>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr><th rowspan="2">Panel</th><th colspan="4">1–5 V.Light</th><th colspan="4">6–15 Light</th><th colspan="4">16–30 Moderate</th><th colspan="4">31–50 Medium</th></tr>
+          <tr><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th><th>D</th><th>N</th><th>Q</th><th>H</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Average Panel</td><td>85</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>300</td><td>125</td><td>150</td><td>175</td><td>300</td><td>125</td><td>150</td><td>175</td><td>300</td></tr>
+          <tr><td>L Fender</td><td>85</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>140</td><td>175</td><td>200</td><td>250</td><td>150</td><td>175</td><td>200</td><td>250</td></tr>
+          <tr><td>Roof</td><td>100</td><td>125</td><td>150</td><td>200</td><td>175</td><td>200</td><td>250</td><td>400</td><td>175</td><td>200</td><td>250</td><td>400</td><td>175</td><td>200</td><td>250</td><td>400</td></tr>
+          <tr><td>Roof Trunk</td><td>85</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>300</td><td>125</td><td>150</td><td>175</td><td>300</td><td>125</td><td>150</td><td>175</td><td>300</td></tr>
+          <tr><td>L/R Door</td><td>85</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>125</td><td>150</td><td>175</td><td>200</td><td>125</td><td>150</td><td>175</td><td>200</td></tr>
+          <tr><td>LF/RF Door</td><td>85</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>125</td><td>150</td><td>175</td><td>200</td><td>125</td><td>150</td><td>175</td><td>200</td></tr>
+          <tr><td>R Quarter</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>125</td><td>150</td><td>175</td><td>200</td><td>125</td><td>150</td><td>175</td><td>200</td></tr>
+          <tr><td>L Quarter</td><td>75</td><td>100</td><td>125</td><td>150</td><td>125</td><td>150</td><td>175</td><td>200</td><td>125</td><td>150</td><td>175</td><td>200</td><td>125</td><td>150</td><td>175</td><td>200</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="addons-block">
+      <h4>Liberty Mutual / Safeco Add-ons</h4>
+      <div class="addons-grid">
+        <div class="addon-pill">+25% Double panels</div>
+        <div class="addon-pill">+25% Aluminum or HSS</div>
+        <div class="addon-pill">Maximum 35% when 2+ add-ons apply — 10% on second add</div>
+        <div class="addon-pill">$50/dent Oversized dent (&gt; half-dollar)</div>
+        <div class="addon-pill">Belt Molding LF/LR/RF/RR as needed</div>
+        <div class="addon-pill">Roof Molding LF/RR as needed</div>
+        <div class="addon-pill">Extended panel repairs on large trucks/vans/SUVs</div>
+        <div class="addon-pill">MCE = Most Cost Effective</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + id).classList.add('active');
+  btn.classList.add('active');
+  // Scroll tab into view on mobile
+  btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+function toggleFaq(el) {
+  el.parentElement.classList.toggle('open');
+}
+
+// Restore active tab from URL hash
+window.addEventListener('DOMContentLoaded', function() {
+  const hash = window.location.hash.replace('#', '');
+  if (hash) {
+    const btn = document.querySelector('.tab-btn[onclick*="' + hash + '"]');
+    if (btn) switchTab(hash, btn);
+  }
+});
+</script>
+</body>
+</html>
