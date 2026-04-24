@@ -184,6 +184,9 @@ html { scroll-behavior: smooth; }
   text-decoration: none;
   transition: background 0.15s;
   font-family: inherit;
+  min-height: 38px;
+  min-width: 38px;
+  justify-content: center;
 }
 .btn-call:hover { background: #B71C1C; }
 
@@ -203,6 +206,9 @@ html { scroll-behavior: smooth; }
   text-decoration: none;
   transition: all 0.15s;
   font-family: inherit;
+  min-height: 38px;
+  min-width: 38px;
+  justify-content: center;
 }
 .btn-contact:hover { background: rgba(21,101,192,0.28); color: #fff; }
 
@@ -700,12 +706,30 @@ body {
 
 /* ── RESPONSIVE ─────────────────────────── */
 @media (max-width: 640px) {
-  .topbar { padding: 0 16px; }
+  .topbar { padding: 0 14px; height: 56px; }
   .page-body { padding: 20px 16px; }
   .brand-divider, .brand-section { display: none; }
-  .topbar-logo { height: 32px; }
+  .topbar-logo { height: 30px; }
   .pane-title { font-size: 22px; }
   .bp-grid { grid-template-columns: 1fr; }
+
+  /* hide text labels — icon-only pill buttons on mobile */
+  .btn-call .btn-label,
+  .btn-contact .btn-label,
+  .btn-back .btn-label { display: none; }
+
+  .btn-call, .btn-contact {
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+  }
+  .btn-call svg, .btn-contact svg { width: 18px; height: 18px; }
+
+  /* hide ntxhail.com back button on very small screens */
+  .btn-back { display: none; }
+
+  .topbar-actions { gap: 8px; }
 }
 </style>
 </head>
@@ -723,19 +747,19 @@ body {
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
       </svg>
-      Call Us
+      <span class="btn-label">Call Us</span>
     </a>
     <button class="btn-contact" onclick="openContactModal()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
-      Contact Us
+      <span class="btn-label">Contact Us</span>
     </button>
     <a href="https://www.ntxhail.com" class="btn-back">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
-      ntxhail.com
+      <span class="btn-label">ntxhail.com</span>
     </a>
   </div>
 </header>
@@ -1014,6 +1038,56 @@ body {
           <li>Apply markup only to the PDR portion on combo repairs</li>
           <li>Document reasoning in estimate notes</li>
         </ul>
+      </div>
+    </div>
+
+    <!-- PDR vs R&R Pricing Rule — full-width feature card -->
+    <div style="margin-top:8px;">
+      <div class="bp-card" style="border-left:4px solid #1565C0;background:linear-gradient(135deg,rgba(21,101,192,0.06) 0%,rgba(21,101,192,0.02) 100%);">
+        <h4 style="color:#90CAF9;font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#90CAF9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          PDR vs. Panel Replacement (R&amp;R) — Pricing Rule
+        </h4>
+
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+          PDR pricing must <strong style="color:var(--text);">never exceed</strong> the total cost of panel replacement (R&amp;R). Always choose the most cost-effective repair method while maintaining proper repair standards.
+        </p>
+
+        <!-- Replacement cost formula -->
+        <div style="background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;margin-bottom:16px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">How to Determine Replacement Cost</div>
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12px;font-weight:600;">
+            <span style="background:rgba(21,101,192,0.2);border:1px solid rgba(21,101,192,0.3);border-radius:6px;padding:4px 10px;color:#90CAF9;">Part Cost</span>
+            <span style="color:var(--muted);">+</span>
+            <span style="background:rgba(21,101,192,0.2);border:1px solid rgba(21,101,192,0.3);border-radius:6px;padding:4px 10px;color:#90CAF9;">Labor</span>
+            <span style="color:var(--muted);">+</span>
+            <span style="background:rgba(21,101,192,0.2);border:1px solid rgba(21,101,192,0.3);border-radius:6px;padding:4px 10px;color:#90CAF9;">Paint</span>
+            <span style="color:var(--muted);">+</span>
+            <span style="background:rgba(21,101,192,0.2);border:1px solid rgba(21,101,192,0.3);border-radius:6px;padding:4px 10px;color:#90CAF9;">Materials</span>
+            <span style="color:var(--muted);">+</span>
+            <span style="background:rgba(21,101,192,0.2);border:1px solid rgba(21,101,192,0.3);border-radius:6px;padding:4px 10px;color:#90CAF9;">Tax</span>
+            <span style="color:var(--muted);">=</span>
+            <span style="background:rgba(21,101,192,0.35);border:1px solid rgba(21,101,192,0.5);border-radius:6px;padding:4px 10px;color:#fff;font-weight:700;">Total Replacement Cost</span>
+          </div>
+        </div>
+
+        <!-- Decision rule -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:rgba(6,95,70,0.15);border:1px solid rgba(6,95,70,0.35);border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:16px;flex-shrink:0;margin-top:1px;">✅</span>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#6EE7B7;margin-bottom:3px;">PDR Cost &lt; Replacement Cost</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5;">Proceed with PDR</div>
+            </div>
+          </div>
+          <div style="background:rgba(198,40,40,0.12);border:1px solid rgba(198,40,40,0.3);border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:16px;flex-shrink:0;margin-top:1px;">🔄</span>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#EF9A9A;margin-bottom:3px;">PDR Cost ≥ Replacement Cost</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5;">Default to R&amp;R (replacement)</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
